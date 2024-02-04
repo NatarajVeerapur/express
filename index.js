@@ -34,7 +34,7 @@ const upload = multer({ storage: storage });
 const ProductModel = mongoose.model("Product", productSchema);
 
 // Handle POST request for adding a new product with image
-app.post("/addProduct", upload.single("newImage"), (req, res) => {
+app.post("/addProduct", upload.single("image"), (req, res) => {
   const { name, price, quantity } = req.body;
   const newProduct = new ProductModel({
     name,
@@ -97,9 +97,31 @@ app.post("/updateProduct", upload.single("newImage"), (req, res) => {
 
 // Handle POST request for deleting a product and associated image
 app.post("/deleteProduct", (req, res) => {
-  const { productId } = req.body;
+  const { productId, quantityToRemove } = req.body;
 
-  ProductModel.findOneAndDelete({ productId: productId })
+  ProductModel.findById(productId)
+    .then((foundProduct) => {
+      if (!foundProduct) {
+        // Product not found
+        console.log(`Product not found for ID: ${productId}`);
+        return res.status(404).send("Product not found");
+      }
+
+      // Ensure quantityToRemove is a positive integer
+      const parsedQuantity = parseInt(quantityToRemove);
+      if (isNaN(parsedQuantity) || parsedQuantity <= 0) {
+        return res.status(400).send("Invalid quantity to remove");
+      }
+
+      // Reduce quantity by the specified amount
+      if (foundProduct.quantity > parsedQuantity) {
+        foundProduct.quantity -= parsedQuantity;
+        return foundProduct.save();
+      } else {
+        // If quantity is less than or equal to the specified amount, remove the complete product
+        return foundProduct.remove();
+      }
+    })
     .then((deletedProduct) => {
       // Delete the associated image if it exists
       if (deletedProduct.image && deletedProduct.image.data) {
@@ -107,12 +129,17 @@ app.post("/deleteProduct", (req, res) => {
         const imagePath = path.join(
           __dirname,
           "uploads",
-          "product_image_" + deletedProduct.productId
+          "product_image_" + deletedProduct._id
         );
-        fs.unlinkSync(imagePath);
+
+        fs.unlinkSync(imagePath, (err) => {
+          if (err) {
+            console.error(`Error deleting image: ${err}`);
+          }
+        });
       }
 
-      console.log(`Product deleted: ${deletedProduct}`);
+      console.log(`Product deleted or quantity reduced: ${deletedProduct}`);
       res.redirect("/viewProducts");
     })
     .catch((error) => {
@@ -120,6 +147,7 @@ app.post("/deleteProduct", (req, res) => {
       res.status(500).send("Internal Server Error");
     });
 });
+
 
 // ... (unchanged code)
 
