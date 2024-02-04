@@ -109,47 +109,20 @@ app.post("/deleteProduct", (req, res) => {
 
       const parsedQuantity = parseInt(quantity);
       if (isNaN(parsedQuantity) || parsedQuantity < 0) {
-        return res.status(400).send("Invalid quantity");
+        return res.status(400).send("Invalid quantity to delete");
       }
 
       if (foundProduct.quantity > parsedQuantity) {
+        // If quantity is greater than requested quantity, reduce the quantity
         foundProduct.quantity -= parsedQuantity;
         return foundProduct.save();
-      } else if (foundProduct.quantity === parsedQuantity) {
-        // If quantity is zero, remove the complete product
-        return foundProduct.remove();
       } else {
-        // If quantity is less than the specified amount, return an error
-        return res.status(400).send("Invalid quantity to remove");
+        // If quantity is equal to or less than requested quantity, delete the product
+        return foundProduct.remove();
       }
     })
     .then((updatedProduct) => {
-      if (updatedProduct && updatedProduct.quantity === 0) {
-        // If the quantity becomes zero, delete the product and associated image
-        const fs = require("fs");
-        const imagePath = path.join(
-          __dirname,
-          "uploads",
-          "product_image_" + updatedProduct._id
-        );
-
-        fs.unlinkSync(imagePath, (err) => {
-          if (err) {
-            console.error(`Error deleting image: ${err}`);
-          }
-        });
-
-        return updatedProduct.remove();
-      } else {
-        // If the quantity is reduced but not zero, redirect to viewProducts
-        res.redirect("/viewProducts");
-      }
-    })
-    .then((deletedProduct) => {
-      if (deletedProduct) {
-        console.log(`Product deleted: ${deletedProduct}`);
-      }
-
+      console.log(`Product deleted or quantity reduced: ${updatedProduct}`);
       res.redirect("/viewProducts");
     })
     .catch((error) => {
@@ -157,6 +130,7 @@ app.post("/deleteProduct", (req, res) => {
       res.status(500).send("Internal Server Error");
     });
 });
+
 
 
 // ... (unchanged code)
