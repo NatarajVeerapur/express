@@ -19,14 +19,14 @@ mongoose.connect("mongodb://localhost:27017/inventory", {
 
 // Define Product Schema and Model with auto-increment
 const productSchema = new mongoose.Schema({
-  productId: { type: Number, unique: true },
+  _id: { type: Number },
   name: { type: String, required: true, trim: true },
   price: { type: Number, required: true, min: 0 },
   quantity: { type: Number, required: true, min: 1 },
   image: { data: Buffer, contentType: String },
 });
 
-productSchema.plugin(mongooseSequence, { inc_field: "productId" });
+productSchema.plugin(mongooseSequence, { inc_field: "_id" });
 
 const storage = multer.memoryStorage();
 const upload = multer({ storage: storage });
@@ -37,6 +37,7 @@ const ProductModel = mongoose.model("Product", productSchema);
 app.post("/addProduct", upload.single("image"), (req, res) => {
   const { name, price, quantity } = req.body;
   const newProduct = new ProductModel({
+    _id: null,
     name,
     price,
     quantity,
