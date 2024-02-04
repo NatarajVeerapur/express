@@ -98,39 +98,39 @@ app.post("/updateProduct", upload.single("image"), (req, res) => {
 
 // Handle POST request for deleting a product and associated image
 app.post("/deleteProduct", (req, res) => {
-  const { _id, quantityToRemove } = req.body;
+  const { productId, quantity } = req.body;
 
-  ProductModel.findById(_id)
+  ProductModel.findById(productId)
     .then((foundProduct) => {
       if (!foundProduct) {
-        // Product not found
         console.log(`Product not found for ID: ${productId}`);
         return res.status(404).send("Product not found");
       }
 
-      // Ensure quantityToRemove is a positive integer
-      const parsedQuantity = parseInt(quantityToRemove);
-      if (isNaN(parsedQuantity) || parsedQuantity <= 0) {
-        return res.status(400).send("Invalid quantity to remove");
+      const parsedQuantity = parseInt(quantity);
+      if (isNaN(parsedQuantity) || parsedQuantity < 0) {
+        return res.status(400).send("Invalid quantity");
       }
 
-      // Reduce quantity by the specified amount
       if (foundProduct.quantity > parsedQuantity) {
         foundProduct.quantity -= parsedQuantity;
         return foundProduct.save();
-      } else {
-        // If quantity is less than or equal to the specified amount, remove the complete product
+      } else if (foundProduct.quantity === parsedQuantity) {
+        // If quantity is zero, remove the complete product
         return foundProduct.remove();
+      } else {
+        // If quantity is less than the specified amount, return an error
+        return res.status(400).send("Invalid quantity to remove");
       }
     })
-    .then((deletedProduct) => {
-      // Delete the associated image if it exists
-      if (deletedProduct.image && deletedProduct.image.data) {
+    .then((updatedProduct) => {
+      if (updatedProduct && updatedProduct.quantity === 0) {
+        // If the quantity becomes zero, delete the product and associated image
         const fs = require("fs");
         const imagePath = path.join(
           __dirname,
           "uploads",
-          "product_image_" + deletedProduct._id
+          "product_image_" + updatedProduct._id
         );
 
         fs.unlinkSync(imagePath, (err) => {
@@ -138,9 +138,18 @@ app.post("/deleteProduct", (req, res) => {
             console.error(`Error deleting image: ${err}`);
           }
         });
+
+        return updatedProduct.remove();
+      } else {
+        // If the quantity is reduced but not zero, redirect to viewProducts
+        res.redirect("/viewProducts");
+      }
+    })
+    .then((deletedProduct) => {
+      if (deletedProduct) {
+        console.log(`Product deleted: ${deletedProduct}`);
       }
 
-      console.log(`Product deleted or quantity reduced: ${deletedProduct}`);
       res.redirect("/viewProducts");
     })
     .catch((error) => {
