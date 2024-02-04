@@ -89,33 +89,31 @@
   </nav>
 
   <main>
-    <!-- Your view products table can go here -->
     <table>
       <thead>
         <tr>
           <th>ID</th>
           <th>Product Name</th>
           <th>Price</th>
-          <th>Image</th> <!-- Add this column for displaying product image -->
+          <th>Image</th>
           <!-- Add more columns as needed -->
         </tr>
       </thead>
       <tbody>
-        <!-- Render product data dynamically -->
         <% products.forEach(function(product) { %>
           <tr>
             <td><%= product._id %></td>
             <td><%= product.name %></td>
             <td><%= product.price %></td>
             <td>
-              <!-- Display product image if available -->
-              <% if (product.image) { %>
-                <img src="<%= product.image %>" alt="<%= product.name %> Image" style="max-width: 100px; max-height: 100px;">
+              <% if (product.image && product.image.data) { %>
+                <% console.log('Data length:', product.image.data.length) %>
+                <% console.log('Content Type:', product.image.contentType) %>
+                <img src="data:image/<%= product.image.contentType %>;base64,<%= product.image.data.toString('base64') %>" alt="Product Image" style="max-width: 100px;">
               <% } else { %>
                 No Image
               <% } %>
             </td>
-            <!-- Add more columns as needed -->
           </tr>
         <% }); %>
       </tbody>
