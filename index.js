@@ -76,13 +76,13 @@ app.get("/viewProducts", (req, res) => {
 
 // Handle POST request for updating a product with image
 app.post("/updateProduct", upload.single("image"), (req, res) => {
-  const { productId, newName, newPrice, newQuantity } = req.body;
+  const { _id, newName, newPrice, newQuantity } = req.body;
   const image = req.file
     ? { data: req.file.buffer, contentType: req.file.mimetype }
     : null;
 
   ProductModel.findByIdAndUpdate(
-    productId,
+    _id,
     { name: newName, price: newPrice, quantity: newQuantity, image: image },
     { new: true }
   )
@@ -98,9 +98,9 @@ app.post("/updateProduct", upload.single("image"), (req, res) => {
 
 // Handle POST request for deleting a product and associated image
 app.post("/deleteProduct", (req, res) => {
-  const { productId, quantityToRemove } = req.body;
+  const { _id, quantityToRemove } = req.body;
 
-  ProductModel.findById(productId)
+  ProductModel.findById(_id)
     .then((foundProduct) => {
       if (!foundProduct) {
         // Product not found
