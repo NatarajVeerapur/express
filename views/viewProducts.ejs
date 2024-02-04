@@ -96,6 +96,7 @@
           <th>Product Name</th>
           <th>Price</th>
           <th>Quantity</th>
+          <th>Total Price</th>
           <th>Image</th>
           <!-- Add more columns as needed -->
         </tr>
@@ -107,6 +108,7 @@
             <td><%= product.name %></td>
             <td><%= product.price %></td>
             <td><%= product.quantity %></td>
+            <td><%= product.price * product.quantity %></td>
             <td>
               <% if (product.image && product.image.data) { %>
                 <img src="data:image/<%= product.image.contentType %>;base64,<%= product.image.data.toString('base64') %>" alt="Product Image" style="max-width: 100px;">
