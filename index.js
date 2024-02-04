@@ -74,7 +74,7 @@ app.get("/viewProducts", (req, res) => {
 });
 
 // Handle POST request for updating a product with image
-app.post("/updateProduct", upload.single("newImage"), (req, res) => {
+app.post("/updateProduct", upload.single("image"), (req, res) => {
   const { productId, newName, newPrice, newQuantity } = req.body;
   const image = req.file
     ? { data: req.file.buffer, contentType: req.file.mimetype }
