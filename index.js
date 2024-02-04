@@ -46,8 +46,8 @@ app.post("/addProduct", upload.single("newImage"), (req, res) => {
     name,
     price,
     image: {
-      data: req.file.buffer,
-      contentType: req.file.mimetype,
+      data: req.file ? req.file.buffer : null,
+      contentType: req.file ? req.file.mimetype : null,
     },
   });
 
@@ -127,6 +127,30 @@ app.post("/deleteProduct", (req, res) => {
 });
 
 // ... (unchanged code)
+
+
+
+app.get("/", (req, res) => {
+    res.render("home", {
+      title: "Inventory Management",
+    });
+  });
+  
+  app.get("/addProduct1", (req, res) => {
+    res.render("addProduct1", {
+      title: "Inventory Management",
+    });
+  });
+  app.get("/updateProduct1", (req, res) => {
+    res.render("updateProduct1", {
+      title: "Inventory Management",
+    });
+  });
+  app.get("/deleteProduct1", (req, res) => {
+    res.render("deleteProduct1", {
+      title: "Inventory Management",
+    });
+  });
 
 app.listen(3001, () => {
   console.log("Listening to the port 3001");
