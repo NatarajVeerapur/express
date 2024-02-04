@@ -1,0 +1,126 @@
+<!-- views/viewProducts.ejs -->
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>View Products</title>
+  <link rel="stylesheet" href="/styles.css">
+  <style>
+    body {
+      font-family: 'Arial', sans-serif;
+      background-color: #f8f8f8;
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    header {
+      background-color: #333;
+      color: #fff;
+      text-align: center;
+      padding: 1em;
+    }
+
+    nav {
+      background-color: #444;
+      color: #fff;
+      text-align: center;
+      padding: 1em;
+    }
+
+    nav a {
+      color: #fff;
+      text-decoration: none;
+      padding: 1em;
+      margin: 0 10px;
+      border-radius: 5px;
+      transition: background-color 0.3s ease;
+    }
+
+    nav a:hover {
+      background-color: #555;
+    }
+
+    main {
+      max-width: 800px;
+      margin: 20px auto;
+      padding: 20px;
+      background-color: #fff;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+      border-radius: 8px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 20px;
+    }
+
+    th, td {
+      padding: 12px;
+      text-align: left;
+      border-bottom: 1px solid #ddd;
+    }
+
+    th {
+      background-color: #4caf50;
+      color: #fff;
+    }
+
+    tbody tr:hover {
+      background-color: #f5f5f5;
+    }
+  </style>
+</head>
+
+<body>
+  <header>
+    <h1>View Products</h1>
+  </header>
+
+  <nav>
+    <a href="/">Home</a>
+    <a href="/addProduct1">Add Product</a>
+    <a href="/viewProducts">View Products</a>
+    <a href="/updateProduct1">Update Product</a>
+    <a href="/deleteProduct1">Delete Product</a>
+  </nav>
+
+  <main>
+    <!-- Your view products table can go here -->
+    <table>
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Product Name</th>
+          <th>Price</th>
+          <th>Image</th> <!-- Add this column for displaying product image -->
+          <!-- Add more columns as needed -->
+        </tr>
+      </thead>
+      <tbody>
+        <!-- Render product data dynamically -->
+        <% products.forEach(function(product) { %>
+          <tr>
+            <td><%= product._id %></td>
+            <td><%= product.name %></td>
+            <td><%= product.price %></td>
+            <td>
+              <!-- Display product image if available -->
+              <% if (product.image) { %>
+                <img src="<%= product.image %>" alt="<%= product.name %> Image" style="max-width: 100px; max-height: 100px;">
+              <% } else { %>
+                No Image
+              <% } %>
+            </td>
+            <!-- Add more columns as needed -->
+          </tr>
+        <% }); %>
+      </tbody>
+    </table>
+  </main>
+</body>
+
+</html>

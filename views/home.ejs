@@ -1,0 +1,81 @@
+<!-- views/home.ejs -->
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Inventory Management</title>
+  <link rel="stylesheet" href="/styles.css">
+  <style>
+    body {
+      font-family: 'Arial', sans-serif;
+      background-color: #f8f8f8;
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    header {
+      background-color: #333;
+      color: #fff;
+      text-align: center;
+      padding: 1em;
+    }
+
+    nav {
+      background-color: #444;
+      color: #fff;
+      text-align: center;
+      padding: 1em;
+    }
+
+    nav a {
+      color: #fff;
+      text-decoration: none;
+      padding: 1em;
+      margin: 0 10px;
+      border-radius: 5px;
+      transition: background-color 0.3s ease;
+    }
+
+    nav a:hover {
+      background-color: #555;
+    }
+
+    main {
+      max-width: 800px;
+      margin: 20px auto;
+      padding: 20px;
+      background-color: #fff;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+      border-radius: 8px;
+      text-align: center;
+    }
+
+    p {
+      font-size: 18px;
+      color: #333;
+    }
+  </style>
+</head>
+
+<body>
+  <header>
+    <h1>Inventory Management</h1>
+  </header>
+
+  <nav>
+    <a href="/">Home</a>
+    <a href="/addProduct1">Add Product</a>
+    <a href="/viewProducts">View Products</a>
+    <a href="/updateProduct1">Update Product</a>
+    <a href="/deleteProduct1">Delete Product</a>
+  </nav>
+
+  <main>
+    <p>Welcome to the Inventory Management System. Explore the features using the navigation links above.</p>
+  </main>
+</body>
+
+</html>

@@ -1,0 +1,194 @@
+<!-- views/addProduct.ejs -->
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Add Product</title>
+  <link rel="stylesheet" href="/styles.css">
+  <style>
+    body {
+      font-family: 'Arial', sans-serif;
+      background-color: #f8f8f8;
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    header {
+      background-color: #333;
+      color: #fff;
+      text-align: center;
+      padding: 1em;
+    }
+
+    nav {
+      background-color: #444;
+      color: #fff;
+      text-align: center;
+      padding: 1em;
+    }
+
+    nav a {
+      color: #fff;
+      text-decoration: none;
+      padding: 1em;
+      margin: 0 10px;
+      border-radius: 5px;
+      transition: background-color 0.3s ease;
+    }
+
+    nav a:hover {
+      background-color: #555;
+    }
+
+    main {
+      max-width: 400px;
+      margin: 20px auto;
+      padding: 20px;
+      background-color: #fff;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+      border-radius: 8px;
+      text-align: center;
+    }
+
+    form {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    label {
+      font-size: 18px;
+      margin-bottom: 8px;
+      color: #333;
+    }
+
+    input {
+      width: 100%;
+      padding: 10px;
+      margin-bottom: 16px;
+      box-sizing: border-box;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+    }
+
+    button {
+      background-color: #4caf50;
+      color: #fff;
+      padding: 12px;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 16px;
+    }
+
+    button:hover {
+      background-color: #45a049;
+    }
+
+
+    form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  label {
+    font-size: 18px;
+    margin-bottom: 8px;
+    color: #333;
+  }
+
+  input,
+  select {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 16px;
+    box-sizing: border-box;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+  }
+
+  input[type="file"] {
+    border: 1px solid #ccc;
+    padding: 10px;
+    border-radius: 4px;
+    background-color: #fff;
+    color: #333;
+    cursor: pointer;
+  }
+
+  select {
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    background-color: #fff;
+    color: #333;
+    cursor: pointer;
+  }
+  </style>
+</head>
+
+<body>
+  <header>
+    <h1>Add Product</h1>
+  </header>
+
+  <nav>
+    <a href="/">Home</a>
+    <a href="/addProduct1">Add Product</a>
+    <a href="/viewProducts">View Products</a>
+    <a href="/updateProduct1">Update Product</a>
+    <a href="/deleteProduct1">Delete Product</a>
+  </nav>
+
+  <!-- <main>
+    
+    <form action="/addProduct" method="post">
+      <label for="name">Product Name:</label>
+      <input type="text" id="name" name="name" required>
+
+      <label for="price">Price:</label>
+      <input type="number" id="price" name="price" min="0" required>
+
+     
+
+      <button type="submit">Add Product</button>
+    </form>
+  </main> -->
+
+  <main>
+    <!-- Product form -->
+    <form action="/addProduct" method="post" enctype="multipart/form-data">
+      <label for="name">Product Name:</label>
+      <input type="text" id="name" name="name" required>
+  
+      <label for="price">Price:</label>
+      <input type="number" id="price" name="price" min="0" required>
+  
+      <!-- Add an input field for uploading an image -->
+      <label for="image">Product Image:</label>
+      <input type="file" id="image" name="image" accept="image/*" required>
+  
+      <!-- Add a dropdown for selecting category -->
+      <label for="category">Category:</label>
+      <select id="category" name="category" required>
+        <option value="electronics">Electronics</option>
+        <option value="clothing">Clothing</option>
+        <option value="books">Books</option>
+        <!-- Add more categories as needed -->
+      </select>
+  
+      <!-- Add more form fields as needed for your product details -->
+  
+      <button type="submit">Add Product</button>
+    </form>
+  </main>
+</body>
+
+</html>
