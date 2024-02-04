@@ -2,6 +2,7 @@ const express = require("express");
 const mongoose = require("mongoose");
 const multer = require("multer");
 const path = require("path");
+const mongooseSequence = require("mongoose-sequence")(mongoose);
 
 const app = express();
 
@@ -16,23 +17,16 @@ mongoose.connect("mongodb://localhost:27017/inventory", {
   useUnifiedTopology: true,
 });
 
-// Define Product Schema and Model
+// Define Product Schema and Model with auto-increment
 const productSchema = new mongoose.Schema({
-  name: {
-    type: String,
-    required: true,
-    trim: true,
-  },
-  price: {
-    type: Number,
-    required: true,
-    min: 0,
-  },
-  image: {
-    data: Buffer,
-    contentType: String,
-  },
+  productId: { type: Number, unique: true },
+  name: { type: String, required: true, trim: true },
+  price: { type: Number, required: true, min: 0 },
+  quantity: { type: Number, required: true, min: 1 },
+  image: { data: Buffer, contentType: String },
 });
+
+productSchema.plugin(mongooseSequence, { inc_field: "productId" });
 
 const storage = multer.memoryStorage();
 const upload = multer({ storage: storage });
@@ -41,10 +35,11 @@ const ProductModel = mongoose.model("Product", productSchema);
 
 // Handle POST request for adding a new product with image
 app.post("/addProduct", upload.single("newImage"), (req, res) => {
-  const { name, price } = req.body;
+  const { name, price, quantity } = req.body;
   const newProduct = new ProductModel({
     name,
     price,
+    quantity,
     image: {
       data: req.file ? req.file.buffer : null,
       contentType: req.file ? req.file.mimetype : null,
@@ -80,14 +75,14 @@ app.get("/viewProducts", (req, res) => {
 
 // Handle POST request for updating a product with image
 app.post("/updateProduct", upload.single("newImage"), (req, res) => {
-  const { productId, newName, newPrice } = req.body;
+  const { productId, newName, newPrice, newQuantity } = req.body;
   const image = req.file
     ? { data: req.file.buffer, contentType: req.file.mimetype }
     : null;
 
   ProductModel.findByIdAndUpdate(
     productId,
-    { name: newName, price: newPrice, image: image },
+    { name: newName, price: newPrice, quantity: newQuantity, image: image },
     { new: true }
   )
     .then((updatedProduct) => {
@@ -104,7 +99,7 @@ app.post("/updateProduct", upload.single("newImage"), (req, res) => {
 app.post("/deleteProduct", (req, res) => {
   const { productId } = req.body;
 
-  ProductModel.findByIdAndRemove(productId)
+  ProductModel.findOneAndDelete({ productId: productId })
     .then((deletedProduct) => {
       // Delete the associated image if it exists
       if (deletedProduct.image && deletedProduct.image.data) {
@@ -112,7 +107,7 @@ app.post("/deleteProduct", (req, res) => {
         const imagePath = path.join(
           __dirname,
           "uploads",
-          "product_image_" + deletedProduct._id
+          "product_image_" + deletedProduct.productId
         );
         fs.unlinkSync(imagePath);
       }
@@ -128,30 +123,28 @@ app.post("/deleteProduct", (req, res) => {
 
 // ... (unchanged code)
 
-
-
 app.get("/", (req, res) => {
-    res.render("home", {
-      title: "Inventory Management",
-    });
+  res.render("home", {
+    title: "Inventory Management",
   });
-  
-  app.get("/addProduct1", (req, res) => {
-    res.render("addProduct1", {
-      title: "Inventory Management",
-    });
+});
+
+app.get("/addProduct1", (req, res) => {
+  res.render("addProduct1", {
+    title: "Inventory Management",
   });
-  app.get("/updateProduct1", (req, res) => {
-    res.render("updateProduct1", {
-      title: "Inventory Management",
-    });
+});
+app.get("/updateProduct1", (req, res) => {
+  res.render("updateProduct1", {
+    title: "Inventory Management",
   });
-  app.get("/deleteProduct1", (req, res) => {
-    res.render("deleteProduct1", {
-      title: "Inventory Management",
-    });
+});
+app.get("/deleteProduct1", (req, res) => {
+  res.render("deleteProduct1", {
+    title: "Inventory Management",
   });
+});
 
 app.listen(3001, () => {
-  console.log("Listening to the port 3001");
+  console.log("Listening to port 3001");
 });
